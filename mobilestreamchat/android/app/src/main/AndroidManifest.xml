@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mobilestreamchat">
+    package="com.example.crypto_wallet">
    <application
-        android:label="mobilestreamchat"
+        android:label="crypto_wallet"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
