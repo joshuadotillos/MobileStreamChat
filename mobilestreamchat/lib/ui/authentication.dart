@@ -1,5 +1,5 @@
-import 'package:crypto_wallet/net/flutterfire.dart';
-import 'package:crypto_wallet/ui/home_view.dart';
+import 'package:mobilestreamchat/net/flutterfire.dart';
+import 'package:mobilestreamchat/ui/home_view.dart';
 import 'package:flutter/material.dart';
 
 class Authentication extends StatefulWidget {

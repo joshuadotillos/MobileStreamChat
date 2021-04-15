@@ -1,4 +1,4 @@
-import 'package:crypto_wallet/net/flutterfire.dart';
+import 'package:mobilestreamchat/net/flutterfire.dart';
 import 'package:flutter/material.dart';
 
 class AddView extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crypto_wallet/net/api_methods.dart';
-import 'package:crypto_wallet/net/flutterfire.dart';
-import 'package:crypto_wallet/ui/add_view.dart';
+import 'package:mobilestreamchat/net/api_methods.dart';
+import 'package:mobilestreamchat/net/flutterfire.dart';
+import 'package:mobilestreamchat/ui/add_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
