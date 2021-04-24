@@ -5,6 +5,11 @@ import 'package:mobilestreamchat/ui/add_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'package:mobilestreamchat/ui/groupChat.dart';
+import 'package:mobilestreamchat/ui/personalChat.dart';
+
+int selectBottomIndex = 0;
+
 class HomeView extends StatefulWidget {
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -28,6 +33,21 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget build(BuildContext context) {
+    String title() {
+      if (selectBottomIndex == 0) {
+        return 'Personal Chat';
+      } else if (selectBottomIndex == 1) {
+        return 'Group Chat';
+      }
+      return "";
+    }
+
+    void itemTapped(int index) {
+      setState(() {
+        selectBottomIndex = index;
+      });
+    }
+
     getValue(String id, double amount) {
       if (id == "bitcoin") {
         return bitcoin * amount;
@@ -39,73 +59,14 @@ class _HomeViewState extends State<HomeView> {
     }
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
+      drawer: drawer(context),
+      appBar: AppBar(
+          title: Text(
+            title(),
+          ),
         ),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Center(
-          child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('Users')
-                  .doc(FirebaseAuth.instance.currentUser.uid)
-                  .collection('Coins')
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                return ListView(
-                  children: snapshot.data.docs.map((document) {
-                    return Padding(
-                        padding: EdgeInsets.only(
-                          top: 5.0,
-                          left: 15.0,
-                          right: 15.0,
-                        ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 1.3,
-                          height: MediaQuery.of(context).size.height / 12,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            color: Colors.blue,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: 5.0,
-                              ),
-                              Text(
-                                "Coin: ${document.id}",
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                "\₱${getValue(document.id, document.data()['Amount']).toStringAsFixed(2)}",
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              IconButton(
-                                  icon: Icon(Icons.close),
-                                  color: Colors.red,
-                                  onPressed: () async {
-                                    await removeCoin(document.id);
-                                  })
-                            ],
-                          ),
-                        ));
-                  }).toList(),
-                );
-              }),
-        ),
+      body: Center(
+        child: (selectBottomIndex == 0) ? PersonalChat() : GroupChat(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -121,6 +82,82 @@ class _HomeViewState extends State<HomeView> {
           color: Colors.white,
         ),
       ),
+      bottomNavigationBar:
+          bottomNavigationBar(context, selectBottomIndex, itemTapped),
     );
   }
+}
+
+//drawer menu
+Widget drawer(BuildContext context) {
+  return Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: <Widget>[
+        DrawerHeader(
+          padding: EdgeInsets.zero,
+          child: Container(
+            color: Theme.of(context).accentColor,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 10.0,
+                ),
+                child: Text(
+                  'Stream Chat',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        ListTile(
+          leading: Icon(Icons.person),
+          title: Text(
+            'Personal Chat',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          onTap: () {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => PersonalChat()));
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.group),
+          title: Text(
+            'Group Chat',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          onTap: () {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => GroupChat()));
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+//bottomNavigationBar
+Widget bottomNavigationBar(
+    BuildContext context, int bottomIndex, Function tap) {
+  return BottomNavigationBar(
+    items: const <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: Icon(Icons.person),
+        title: Text('Personal Chat'),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.group),
+        title: Text('Group Chat'),
+      ),
+    ],
+    currentIndex: bottomIndex,
+    onTap: tap,
+  );
 }
