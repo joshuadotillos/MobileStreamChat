@@ -5,8 +5,10 @@ import 'package:mobilestreamchat/ui/add_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:mobilestreamchat/ui/groupChat.dart';
-import 'package:mobilestreamchat/ui/personalChat.dart';
+import 'package:mobilestreamchat/ui/chat/groupChat.dart';
+import 'package:mobilestreamchat/ui/chat/newDirectMessage.dart';
+import 'package:mobilestreamchat/ui/chat/newGroup.dart';
+import 'package:mobilestreamchat/ui/chat/personalChat.dart';
 
 int selectBottomIndex = 0;
 
@@ -16,21 +18,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  double bitcoin = 0.0;
-  double tether = 0.0;
-  double ethereum = 0.0;
-
   @override
-  void initState() {
-    getValues();
-  }
-
-  getValues() async {
-    bitcoin = await getPrice("bitcoin");
-    ethereum = await getPrice("ethereum");
-    tether = await getPrice("tether");
-    setState(() {});
-  }
 
   Widget build(BuildContext context) {
     String title() {
@@ -48,16 +36,6 @@ class _HomeViewState extends State<HomeView> {
       });
     }
 
-    getValue(String id, double amount) {
-      if (id == "bitcoin") {
-        return bitcoin * amount;
-      } else if (id == "ethereum") {
-        return ethereum * amount;
-      } else {
-        return tether * amount;
-      }
-    }
-
     return Scaffold(
       drawer: drawer(context),
       appBar: AppBar(
@@ -67,20 +45,6 @@ class _HomeViewState extends State<HomeView> {
         ),
       body: Center(
         child: (selectBottomIndex == 0) ? PersonalChat() : GroupChat(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddView(),
-            ),
-          );
-        },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
       ),
       bottomNavigationBar:
           bottomNavigationBar(context, selectBottomIndex, itemTapped),
@@ -107,7 +71,6 @@ Widget drawer(BuildContext context) {
                 child: Text(
                   'Stream Chat',
                   style: TextStyle(
-                    color: Theme.of(context).primaryColor,
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -117,25 +80,25 @@ Widget drawer(BuildContext context) {
           ),
         ),
         ListTile(
-          leading: Icon(Icons.person),
+          leading: Icon(Icons.edit),
           title: Text(
-            'Personal Chat',
+            'New Direct Message',
             style: Theme.of(context).textTheme.headline6,
           ),
           onTap: () {
             Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => PersonalChat()));
+                MaterialPageRoute(builder: (context) => NewDirectMessage()));
           },
         ),
         ListTile(
-          leading: Icon(Icons.group),
+          leading: Icon(Icons.group_add),
           title: Text(
-            'Group Chat',
+            'New Group',
             style: Theme.of(context).textTheme.headline6,
           ),
           onTap: () {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => GroupChat()));
+                context, MaterialPageRoute(builder: (context) => NewGroup()));
           },
         ),
       ],
