@@ -8,9 +8,11 @@ class PersonalChat extends StatefulWidget {
 class _PersonalChatState extends State<PersonalChat> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [Text('Hello Personal Chat')],
+    return Material(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text('Hello Personal Chat')],
+      ),
     );
   }
 }
