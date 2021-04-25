@@ -19,7 +19,6 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   @override
-
   Widget build(BuildContext context) {
     String title() {
       if (selectBottomIndex == 0) {
@@ -39,10 +38,10 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       drawer: drawer(context),
       appBar: AppBar(
-          title: Text(
-            title(),
-          ),
+        title: Text(
+          title(),
         ),
+      ),
       body: Center(
         child: (selectBottomIndex == 0) ? PersonalChat() : GroupChat(),
       ),
@@ -61,18 +60,34 @@ Widget drawer(BuildContext context) {
         DrawerHeader(
           padding: EdgeInsets.zero,
           child: Container(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
             child: Align(
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(
-                  left: 10.0,
+                  left: 20,
                 ),
-                child: Text(
-                  'Stream Chat',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
+                child: UserAccountsDrawerHeader(
+                  accountEmail: FittedBox(
+                    child: Text(
+                      "email.com",
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                  accountName: FittedBox(
+                    child: Text(
+                      "Name",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundColor: Theme.of(context).accentColor,
+                    child: Text(
+                      "NM",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ),
@@ -101,6 +116,19 @@ Widget drawer(BuildContext context) {
                 context, MaterialPageRoute(builder: (context) => NewGroup()));
           },
         ),
+        Container(
+          child: Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: ListTile(
+              leading: Icon(Icons.person),
+              title: Text(
+                'Sign Out',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              onTap: () {},
+            ),
+          ),
+        ),
       ],
     ),
   );
@@ -121,6 +149,8 @@ Widget bottomNavigationBar(
       ),
     ],
     currentIndex: bottomIndex,
+    selectedItemColor: Theme.of(context).primaryColor,
+    unselectedItemColor: Theme.of(context).accentColor,
     onTap: tap,
   );
 }
