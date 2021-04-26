@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mobilestreamchat/model/messageDummy.dart';
 import 'package:mobilestreamchat/net/api_methods.dart';
 import 'package:mobilestreamchat/net/flutterfire.dart';
 import 'package:mobilestreamchat/ui/add_view.dart';
@@ -63,32 +64,24 @@ Widget drawer(BuildContext context) {
             color: Theme.of(context).primaryColor,
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
+              child: UserAccountsDrawerHeader(
+                accountEmail: FittedBox(
+                  child: Text(
+                    "email@email.com",
+                    style: TextStyle(fontSize: 16.0),
+                  ),
                 ),
-                child: UserAccountsDrawerHeader(
-                  accountEmail: FittedBox(
-                    child: Text(
-                      "email.com",
-                      style: TextStyle(fontSize: 16.0),
+                accountName: FittedBox(
+                  child: Text(
+                    currentUser.name,
+                    style: TextStyle(
+                      fontSize: 16.0,
                     ),
                   ),
-                  accountName: FittedBox(
-                    child: Text(
-                      "Name",
-                      style: TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundColor: Theme.of(context).accentColor,
-                    child: Text(
-                      "NM",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+                ),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: Theme.of(context).accentColor,
+                  backgroundImage: AssetImage(currentUser.imageUrl),
                 ),
               ),
             ),
