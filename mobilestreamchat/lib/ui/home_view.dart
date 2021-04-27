@@ -5,6 +5,7 @@ import 'package:mobilestreamchat/net/flutterfire.dart';
 import 'package:mobilestreamchat/ui/add_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mobilestreamchat/ui/authentication.dart';
 
 import 'package:mobilestreamchat/ui/chat/groupChat.dart';
 import 'package:mobilestreamchat/ui/chat/newDirectMessage.dart';
@@ -119,7 +120,9 @@ Widget drawer(BuildContext context) {
                 style: Theme.of(context).textTheme.headline6,
               ),
               onTap: () {
-                //to be edit
+                //not sure for the sign out pero kani lang sa for now
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Authentication()));
               },
             ),
           ),
