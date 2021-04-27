@@ -12,11 +12,12 @@ class ChatMessage extends StatefulWidget {
 
 class _ChatMessageState extends State<ChatMessage> {
   _buildMessage(Message message, bool isCurrentUser) {
-    return Container(
+    final Container msg = Container(
       margin: isCurrentUser
           ? EdgeInsets.only(top: 8.0, bottom: 8.0, left: 80.0)
-          : EdgeInsets.only(top: 8.0, bottom: 8.0, right: 80.0),
+          : EdgeInsets.only(top: 8.0, bottom: 8.0),
       padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+      width: MediaQuery.of(context).size.width * 0.75,
       decoration: BoxDecoration(
         color: isCurrentUser
             ? Theme.of(context).accentColor
@@ -54,6 +55,25 @@ class _ChatMessageState extends State<ChatMessage> {
         ],
       ),
     );
+    //currentUserMsg
+    if (isCurrentUser) {
+      return msg;
+    }
+    //liked messages
+    return Row(
+      children: <Widget>[
+        msg,
+        IconButton(
+          icon: message.isLiked
+              ? Icon(Icons.favorite)
+              : Icon(Icons.favorite_border),
+          iconSize: 30.0,
+          color:
+              message.isLiked ? Theme.of(context).accentColor : Colors.blueGrey,
+          onPressed: () {},
+        ),
+      ],
+    );
   }
 
   _buildMessageAdd() {
@@ -77,11 +97,10 @@ class _ChatMessageState extends State<ChatMessage> {
                 setState(() {});
               },
               decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0)),
-                hintText: "Send a message...",
-                contentPadding: EdgeInsets.all(15.0)
-              ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  hintText: "Send a message...",
+                  contentPadding: EdgeInsets.all(15.0)),
             ),
           ),
           //sending message
@@ -100,9 +119,45 @@ class _ChatMessageState extends State<ChatMessage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.user.name,
+        title: Center(
+          child: Column(
+            children: <Widget>[
+              Text(
+                widget.user.name,
+              ),
+              Text(
+                //to be implement the isSeen
+                "Seen 1 hour ago",
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.blueGrey[300],
+                ),
+              ),
+            ],
+          ),
         ),
+        actions: <Widget>[
+          InkWell(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            onTap: () {
+              //to be edit
+            },
+            child: Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: CircleAvatar(
+                  backgroundImage: AssetImage(widget.user.imageUrl),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
