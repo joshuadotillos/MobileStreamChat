@@ -41,7 +41,7 @@ class RecentChats extends StatelessWidget {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Text(
                           chat.sender.name,
                           style: TextStyle(
@@ -70,7 +70,7 @@ class RecentChats extends StatelessWidget {
                       ],
                     ),
                     Column(
-                      children: [
+                      children: <Widget>[
                         Text(
                           chat.time,
                           style: TextStyle(

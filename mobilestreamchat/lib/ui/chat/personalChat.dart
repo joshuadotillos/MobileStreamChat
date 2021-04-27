@@ -15,7 +15,7 @@ class _PersonalChatState extends State<PersonalChat> {
   Widget build(BuildContext context) {
     return Material(
       child: Column(
-        children: [
+        children: <Widget>[
           RecentChats(),
         ],
       ),

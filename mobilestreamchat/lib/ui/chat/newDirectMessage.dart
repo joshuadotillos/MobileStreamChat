@@ -22,7 +22,9 @@ class _NewDirectMessageState extends State<NewDirectMessage> {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [Text('Hello Direct Message')],
+        children: <Widget>[
+          Text('Hello Direct Message'),
+        ],
       ),
     );
   }

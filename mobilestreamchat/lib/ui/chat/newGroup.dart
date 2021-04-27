@@ -22,7 +22,9 @@ class _NewGroupState extends State<NewGroup> {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [Text('Hello New Group Chat')],
+        children: <Widget>[
+          Text('Hello New Group Chat'),
+        ],
       ),
     );
   }

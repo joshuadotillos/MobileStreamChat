@@ -118,7 +118,9 @@ Widget drawer(BuildContext context) {
                 'Sign Out',
                 style: Theme.of(context).textTheme.headline6,
               ),
-              onTap: () {},
+              onTap: () {
+                //to be edit
+              },
             ),
           ),
         ),

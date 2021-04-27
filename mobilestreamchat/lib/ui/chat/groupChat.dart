@@ -10,7 +10,9 @@ class _GroupChatState extends State<GroupChat> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [Text('Hello Group Chat')],
+      children: <Widget>[
+        Text('Hello Group Chat'),
+      ],
     );
   }
 }
