@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
       title: 'Mobile Stream Chat',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        accentColor: Colors.purple[700],
+        primarySwatch: Colors.indigo,
+        accentColor: Colors.yellow[900],
         fontFamily: 'Raleway',
         textTheme: ThemeData.light().textTheme.copyWith(
               bodyText2: TextStyle(

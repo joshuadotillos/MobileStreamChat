@@ -11,15 +11,17 @@ class ChatMessage extends StatefulWidget {
 }
 
 class _ChatMessageState extends State<ChatMessage> {
-  _buildMessage(Message message, bool isMe) {
+  _buildMessage(Message message, bool isCurrentUser) {
     return Container(
-      margin: isMe
+      margin: isCurrentUser
           ? EdgeInsets.only(top: 8.0, bottom: 8.0, left: 80.0)
           : EdgeInsets.only(top: 8.0, bottom: 8.0, right: 80.0),
       padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
       decoration: BoxDecoration(
-        color: isMe ? Colors.blue[200] : Colors.purple[100],
-        borderRadius: isMe
+        color: isCurrentUser
+            ? Theme.of(context).accentColor
+            : Theme.of(context).primaryColor,
+        borderRadius: isCurrentUser
             ? BorderRadius.only(
                 topLeft: Radius.circular(15.0),
                 bottomLeft: Radius.circular(15.0),
@@ -32,11 +34,23 @@ class _ChatMessageState extends State<ChatMessage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(message.time),
+          Text(
+            message.time,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15.0,
+            ),
+          ),
           SizedBox(
             height: 8.0,
           ),
-          Text(message.text),
+          Text(
+            message.text,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15.0,
+            ),
+          ),
         ],
       ),
     );
@@ -62,8 +76,11 @@ class _ChatMessageState extends State<ChatMessage> {
               onChanged: (value) {
                 setState(() {});
               },
-              decoration: InputDecoration.collapsed(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0)),
                 hintText: "Send a message...",
+                contentPadding: EdgeInsets.all(15.0)
               ),
             ),
           ),
@@ -97,8 +114,9 @@ class _ChatMessageState extends State<ChatMessage> {
                 itemCount: messages.length,
                 itemBuilder: (BuildContext context, int index) {
                   final Message message = messages[index];
-                  final bool isMe = message.sender.id == currentUser.id;
-                  return _buildMessage(message, isMe);
+                  final bool isCurrentUser =
+                      message.sender.id == currentUser.id;
+                  return _buildMessage(message, isCurrentUser);
                 },
               ),
             ),
