@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobilestreamchat/chat/chatMessage.dart';
 import 'package:mobilestreamchat/model/messageDummy.dart';
-import 'package:mobilestreamchat/ui/chat/chatMessage.dart';
 
 class RecentChats extends StatelessWidget {
   @override

@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:mobilestreamchat/ui/home_view.dart';
+import 'package:mobilestreamchat/views/chatRoomScreen.dart';
 
-class NewGroup extends StatefulWidget {
+class NewDirectMessage extends StatefulWidget {
   @override
-  _NewGroupState createState() => _NewGroupState();
+  _NewDirectMessageState createState() => _NewDirectMessageState();
 }
 
-class _NewGroupState extends State<NewGroup> {
+class _NewDirectMessageState extends State<NewDirectMessage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Group'),
+        title: Text('New Direct Message'),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
           ),
           onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => HomeView())),
+              .push(MaterialPageRoute(builder: (context) => ChatRoom())),
         ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('Hello New Group Chat'),
+          Text('Hello Direct Message'),
         ],
       ),
     );

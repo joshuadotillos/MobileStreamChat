@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 Widget appBarMain(BuildContext context) {
   return AppBar(
     title: Text("Stream Chat"),
+    automaticallyImplyLeading: false,
   );
 }
 
@@ -12,9 +13,9 @@ InputDecoration textFieldInputDecoration(String hintText) {
 }
 
 TextStyle simpleTextStyle() {
-  return TextStyle(fontSize: 15.0);
+  return TextStyle(fontSize: 16.0, fontFamily: "Raleway");
 }
 
 TextStyle mediumTextStyle() {
-  return TextStyle(fontSize: 13.0);
+  return TextStyle(fontSize: 14.0, fontFamily: "Raleway");
 }
