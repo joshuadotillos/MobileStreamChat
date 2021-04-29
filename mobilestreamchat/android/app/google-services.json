@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "402718967287",
-    "project_id": "mobilestreamchat",
-    "storage_bucket": "mobilestreamchat.appspot.com"
+    "project_number": "616559346289",
+    "project_id": "chatappdata-f2df1",
+    "storage_bucket": "chatappdata-f2df1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:402718967287:android:30a4ef53f68f4e8fe95af2",
+        "mobilesdk_app_id": "1:616559346289:android:8b1e9489fa44de9bf651d0",
         "android_client_info": {
           "package_name": "com.example.mobilestreamchat"
         }
       },
       "oauth_client": [
         {
-          "client_id": "402718967287-f77mti275b686ca84hlqrjjiil00el16.apps.googleusercontent.com",
+          "client_id": "616559346289-c0pl982270e079p8qtn76d0tsi891062.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDzxZJ-6NZvrE79Kzhij8Cq3RGrndLoc0I"
+          "current_key": "AIzaSyDG_ttLbtKjOof0p51aMq0KkvAjBDJu4E4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "402718967287-f77mti275b686ca84hlqrjjiil00el16.apps.googleusercontent.com",
+              "client_id": "616559346289-c0pl982270e079p8qtn76d0tsi891062.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
