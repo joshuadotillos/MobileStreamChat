@@ -143,21 +143,6 @@ class _SignUpState extends State<SignUp> {
                       SizedBox(
                         height: 16,
                       ),
-                      Container(
-                        alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.symmetric(vertical: 20.0),
-                        decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Text(
-                          "Sign Up with Google",
-                          style: TextStyle(fontSize: 17, color: Colors.white),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

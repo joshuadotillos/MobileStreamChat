@@ -19,7 +19,7 @@ class ChatRoom extends StatefulWidget {
 }
 
 class _ChatRoomState extends State<ChatRoom> {
-  AuthMethods authMenthods = new AuthMethods();
+  AuthMethods authMethods = new AuthMethods();
   @override
   Widget build(BuildContext context) {
     String title() {
