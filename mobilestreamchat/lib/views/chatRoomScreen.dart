@@ -1,15 +1,14 @@
 //EDITED BY ROSIE
 import 'package:flutter/material.dart';
-import 'package:mobilestreamchat/chat/groupChat.dart';
 import 'package:mobilestreamchat/chat/newDirectMessage.dart';
 import 'package:mobilestreamchat/chat/newGroup.dart';
-import 'package:mobilestreamchat/chat/personalChat.dart';
 import 'package:mobilestreamchat/helper/authenticate.dart';
+import 'package:mobilestreamchat/helper/constants.dart';
+import 'package:mobilestreamchat/helper/helperfunctions.dart';
 import 'package:mobilestreamchat/services/auth.dart';
+import 'package:mobilestreamchat/services/database.dart';
+import 'package:mobilestreamchat/views/conversationScreen.dart';
 import 'package:mobilestreamchat/views/search.dart';
-
-import 'package:mobilestreamchat/views/signin.dart';
-import 'package:mobilestreamchat/widgets/widget.dart';
 
 int selectBottomIndex = 0;
 
@@ -20,6 +19,50 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
   AuthMethods authMethods = new AuthMethods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
+  Stream chatRoomsStream;
+
+  Widget chatRoomList() {
+    return StreamBuilder(
+        stream: chatRoomsStream,
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) {
+                    return ChatRoomsTile(
+                        snapshot.data.docs[index]
+                                    .data()["users"][0]
+                                    .toString() ==
+                                Constants.myName
+                            ? snapshot.data.docs[index]
+                                .data()["users"][1]
+                                .toString()
+                            : snapshot.data.docs[index]
+                                .data()["users"][0]
+                                .toString(),
+                        snapshot.data.docs[index].data()["chatroomId"]);
+                  })
+              : Container();
+        });
+  }
+
+  @override
+  void initState() {
+    getUserInfo();
+    super.initState();
+  }
+
+  getUserInfo() async {
+    Constants.myName = await HelperFuntions.getUserNameSharedPreference();
+    databaseMethods.getChatRooms(Constants.myName).then((value) {
+      setState(() {
+        chatRoomsStream = value;
+      });
+    });
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     String title() {
@@ -44,9 +87,7 @@ class _ChatRoomState extends State<ChatRoom> {
           title(),
         ),
       ),
-      body: Center(
-        child: (selectBottomIndex == 0) ? PersonalChat() : GroupChat(),
-      ),
+      body: chatRoomList(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.search),
         onPressed: () {
@@ -157,4 +198,47 @@ Widget bottomNavigationBar(
     unselectedItemColor: Theme.of(context).accentColor,
     onTap: tap,
   );
+}
+
+class ChatRoomsTile extends StatelessWidget {
+  final String userName;
+  final String chatRoomId;
+  ChatRoomsTile(this.userName, this.chatRoomId);
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ConversationScreen(chatRoomId)));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Row(
+          children: [
+            Container(
+              height: 40.0,
+              width: 40.0,
+              alignment: Alignment.center,
+              child: Text(
+                "${userName.substring(0, 1).toUpperCase()}",
+                style: TextStyle(color: Colors.white),
+              ),
+              decoration: BoxDecoration(
+                  color: Colors.indigo,
+                  borderRadius: BorderRadius.circular(40)),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text(
+              userName,
+              style: TextStyle(fontSize: 14.0, fontFamily: "Raleway"),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 }

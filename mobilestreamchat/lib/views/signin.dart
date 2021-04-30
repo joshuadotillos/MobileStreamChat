@@ -1,5 +1,10 @@
 //EDITED BY ROSIE
+import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
+import 'package:mobilestreamchat/helper/helperfunctions.dart';
+import 'package:mobilestreamchat/services/auth.dart';
+import 'package:mobilestreamchat/services/database.dart';
+import 'package:mobilestreamchat/views/chatRoomScreen.dart';
 import 'package:mobilestreamchat/widgets/widget.dart';
 
 class SignIn extends StatefulWidget {
@@ -12,10 +17,45 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final formKey = GlobalKey<FormState>();
+  AuthMethods authMethods = new AuthMethods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController emailTextEditingController =
       new TextEditingController();
   TextEditingController passwordTextEditingController =
       new TextEditingController();
+
+  bool isLoading = false;
+  QuerySnapshot snapshotUserInfo;
+
+  signIn() {
+    if (formKey.currentState.validate()) {
+      HelperFuntions.saveUserEmailSharedPreference(
+          emailTextEditingController.text);
+
+      databaseMethods
+          .getUserbyUserEmail(emailTextEditingController.text)
+          .then((val) {
+        snapshotUserInfo = val;
+        HelperFuntions.saveUserNameSharedPreference(
+            snapshotUserInfo.docs[0].data()["name"]);
+        // print("${snapshotUserInfo.docs[0].data()["name"]}this is not good");
+      });
+
+      setState(() {
+        isLoading = true;
+      });
+      authMethods
+          .signInWithEmailAndPassword(emailTextEditingController.text,
+              passwordTextEditingController.text)
+          .then((val) {
+        if (val != null) {
+          HelperFuntions.saveUserLoggedInSharedPreference(true);
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => ChatRoom()));
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +91,7 @@ class _SignInState extends State<SignIn> {
                       TextFormField(
                         obscureText: true,
                         validator: (val) {
-                          return val.length < 4
-                              ? "Enter a Stronger Password"
-                              : null;
+                          return val.length < 4 ? "Wrong Password" : null;
                         },
                         controller: passwordTextEditingController,
                         decoration: textFieldInputDecoration("Password"),
@@ -63,31 +101,23 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
                 SizedBox(
-                  height: 8.0,
-                ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text(
-                      "Forgot Password?",
-                      style: mediumTextStyle(),
-                    ),
-                  ),
-                ),
-                SizedBox(
                   height: 8,
                 ),
-                Container(
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  decoration: BoxDecoration(
-                      color: Colors.indigo,
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Text(
-                    "Sign In",
-                    style: TextStyle(fontSize: 17, color: Colors.white),
+                GestureDetector(
+                  onTap: () {
+                    signIn();
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                    decoration: BoxDecoration(
+                        color: Colors.indigo,
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Text(
+                      "Sign In",
+                      style: TextStyle(fontSize: 17, color: Colors.white),
+                    ),
                   ),
                 ),
                 SizedBox(

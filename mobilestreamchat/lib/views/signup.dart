@@ -1,9 +1,9 @@
 //EDITED BY ROSIE
 import 'package:flutter/material.dart';
+import 'package:mobilestreamchat/helper/authenticate.dart';
 import 'package:mobilestreamchat/helper/helperfunctions.dart';
 import 'package:mobilestreamchat/services/auth.dart';
 import 'package:mobilestreamchat/services/database.dart';
-import 'package:mobilestreamchat/views/chatRoomScreen.dart';
 import 'package:mobilestreamchat/widgets/widget.dart';
 
 class SignUp extends StatefulWidget {
@@ -51,7 +51,7 @@ class _SignUpState extends State<SignUp> {
         databaseMethods.uploadUserInfo(userInfoMap);
         HelperFuntions.saveUserLoggedInSharedPreference(true);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ChatRoom()));
+            context, MaterialPageRoute(builder: (context) => Authenticate()));
       });
     }
   }
@@ -113,20 +113,6 @@ class _SignUpState extends State<SignUp> {
                               style: simpleTextStyle(),
                             ),
                           ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      Container(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: Text(
-                            "Forgot Password?",
-                            style: mediumTextStyle(),
-                          ),
                         ),
                       ),
                       SizedBox(
