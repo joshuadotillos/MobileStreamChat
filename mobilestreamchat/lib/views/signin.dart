@@ -1,7 +1,5 @@
 //EDITED BY ROSIE
 import "package:flutter/material.dart";
-import 'package:mobilestreamchat/net/flutterfire.dart';
-import 'package:mobilestreamchat/views/chatRoomScreen.dart';
 import 'package:mobilestreamchat/widgets/widget.dart';
 
 class SignIn extends StatefulWidget {
@@ -13,8 +11,11 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  TextEditingController _emailField = TextEditingController();
-  TextEditingController _passwordField = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  TextEditingController emailTextEditingController =
+      new TextEditingController();
+  TextEditingController passwordTextEditingController =
+      new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +32,35 @@ class _SignInState extends State<SignIn> {
                 SizedBox(
                   height: 90,
                 ),
-                TextField(
-                  controller: _emailField,
-                  decoration: textFieldInputDecoration("Email"),
-                  style: simpleTextStyle(),
-                ),
-                TextField(
-                  controller: _passwordField,
-                  decoration: textFieldInputDecoration("Password"),
-                  style: simpleTextStyle(),
+                Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        validator: (val) {
+                          return RegExp(
+                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(val)
+                              ? null
+                              : "Enter valid email";
+                        },
+                        controller: emailTextEditingController,
+                        decoration: textFieldInputDecoration("Email"),
+                        style: simpleTextStyle(),
+                      ),
+                      TextFormField(
+                        obscureText: true,
+                        validator: (val) {
+                          return val.length < 4
+                              ? "Enter a Stronger Password"
+                              : null;
+                        },
+                        controller: passwordTextEditingController,
+                        decoration: textFieldInputDecoration("Password"),
+                        style: simpleTextStyle(),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 8.0,
@@ -60,30 +81,28 @@ class _SignInState extends State<SignIn> {
                 Container(
                   alignment: Alignment.center,
                   width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(vertical: 5.0),
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
                   decoration: BoxDecoration(
                       color: Colors.indigo,
                       borderRadius: BorderRadius.circular(30)),
-                  child: MaterialButton(
-                    onPressed: () async {
-                      bool shouldNavigate =
-                          await signIn(_emailField.text, _passwordField.text);
-                      if (shouldNavigate) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ChatRoom(),
-                          ),
-                        );
-                      }
-                    },
-                    child: Text(
-                      "Sign In",
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontFamily: "Raleway",
-                          color: Colors.white),
-                    ),
+                  child: Text(
+                    "Sign In",
+                    style: TextStyle(fontSize: 17, color: Colors.white),
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Text(
+                    "Sign In with Google",
+                    style: TextStyle(fontSize: 17, color: Colors.white),
                   ),
                 ),
                 SizedBox(
