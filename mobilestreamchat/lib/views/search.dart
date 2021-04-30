@@ -57,7 +57,9 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context),
+      appBar: AppBar(
+        title: Text("Search"),
+      ),
       body: Container(
         child: Column(
           children: [

@@ -11,6 +11,12 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  final formKey = GlobalKey<FormState>();
+  TextEditingController emailTextEditingController =
+      new TextEditingController();
+  TextEditingController passwordTextEditingController =
+      new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,13 +32,35 @@ class _SignInState extends State<SignIn> {
                 SizedBox(
                   height: 90,
                 ),
-                TextField(
-                  decoration: textFieldInputDecoration("Email"),
-                  style: simpleTextStyle(),
-                ),
-                TextField(
-                  decoration: textFieldInputDecoration("Password"),
-                  style: simpleTextStyle(),
+                Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        validator: (val) {
+                          return RegExp(
+                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(val)
+                              ? null
+                              : "Enter valid email";
+                        },
+                        controller: emailTextEditingController,
+                        decoration: textFieldInputDecoration("Email"),
+                        style: simpleTextStyle(),
+                      ),
+                      TextFormField(
+                        obscureText: true,
+                        validator: (val) {
+                          return val.length < 4
+                              ? "Enter a Stronger Password"
+                              : null;
+                        },
+                        controller: passwordTextEditingController,
+                        decoration: textFieldInputDecoration("Password"),
+                        style: simpleTextStyle(),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 8.0,

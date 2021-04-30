@@ -1,5 +1,6 @@
 //EDITED BY ROSIE
 import 'package:flutter/material.dart';
+import 'package:mobilestreamchat/helper/helperfunctions.dart';
 import 'package:mobilestreamchat/services/auth.dart';
 import 'package:mobilestreamchat/services/database.dart';
 import 'package:mobilestreamchat/views/chatRoomScreen.dart';
@@ -15,8 +16,8 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   bool isLoading = false;
-  AuthMethods authMethods = new AuthMethods();
 
+  AuthMethods authMethods = new AuthMethods();
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
   final formKey = GlobalKey<FormState>();
@@ -26,12 +27,19 @@ class _SignUpState extends State<SignUp> {
       new TextEditingController();
   TextEditingController passwordTextEditingController =
       new TextEditingController();
+
   signMeUp() {
     if (formKey.currentState.validate()) {
       Map<String, String> userInfoMap = {
         "name": userNameTextEditingController.text,
         "email": emailTextEditingController.text
       };
+
+      HelperFuntions.saveUserEmailSharedPreference(
+          emailTextEditingController.text);
+      HelperFuntions.saveUserEmailSharedPreference(
+          userNameTextEditingController.text);
+
       setState(() {
         isLoading = true;
       });
@@ -41,6 +49,7 @@ class _SignUpState extends State<SignUp> {
           .then((val) {
         // print("${val.uid}");
         databaseMethods.uploadUserInfo(userInfoMap);
+        HelperFuntions.saveUserLoggedInSharedPreference(true);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => ChatRoom()));
       });
@@ -138,21 +147,6 @@ class _SignUpState extends State<SignUp> {
                             "Sign Up",
                             style: TextStyle(fontSize: 17, color: Colors.white),
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.symmetric(vertical: 20.0),
-                        decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Text(
-                          "Sign Up with Google",
-                          style: TextStyle(fontSize: 17, color: Colors.white),
                         ),
                       ),
                       SizedBox(
