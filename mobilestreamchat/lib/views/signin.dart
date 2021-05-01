@@ -26,34 +26,40 @@ class _SignInState extends State<SignIn> {
 
   bool isLoading = false;
   QuerySnapshot snapshotUserInfo;
+  String _error;
 
   signIn() {
     if (formKey.currentState.validate()) {
-      HelperFuntions.saveUserEmailSharedPreference(
-          emailTextEditingController.text);
+      try {
+        HelperFuntions.saveUserEmailSharedPreference(
+            emailTextEditingController.text);
 
-      databaseMethods
-          .getUserbyUserEmail(emailTextEditingController.text)
-          .then((val) {
-        snapshotUserInfo = val;
-        HelperFuntions.saveUserNameSharedPreference(
-            snapshotUserInfo.docs[0].data()["name"]);
-        // print("${snapshotUserInfo.docs[0].data()["name"]}this is not good");
-      });
+        databaseMethods
+            .getUserbyUserEmail(emailTextEditingController.text)
+            .then((val) {
+          snapshotUserInfo = val;
+          HelperFuntions.saveUserNameSharedPreference(
+              snapshotUserInfo.docs[0].data()["name"]);
+        });
 
-      setState(() {
-        isLoading = true;
-      });
-      authMethods
-          .signInWithEmailAndPassword(emailTextEditingController.text,
-              passwordTextEditingController.text)
-          .then((val) {
-        if (val != null) {
-          HelperFuntions.saveUserLoggedInSharedPreference(true);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => ChatRoom()));
-        }
-      });
+        setState(() {
+          isLoading = true;
+        });
+        authMethods
+            .signInWithEmailAndPassword(emailTextEditingController.text,
+                passwordTextEditingController.text)
+            .then((val) {
+          if (val != null) {
+            HelperFuntions.saveUserLoggedInSharedPreference(true);
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => ChatRoom()));
+          }
+        });
+      } catch (e) {
+        setState(() {
+          _error = e.message;
+        });
+      }
     }
   }
 
@@ -69,6 +75,7 @@ class _SignInState extends State<SignIn> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                showAlert(),
                 SizedBox(
                   height: 90,
                 ),
@@ -77,22 +84,14 @@ class _SignInState extends State<SignIn> {
                   child: Column(
                     children: [
                       TextFormField(
-                        validator: (val) {
-                          return RegExp(
-                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                  .hasMatch(val)
-                              ? null
-                              : "Enter valid email";
-                        },
+                        validator: EmailValidator.validate,
                         controller: emailTextEditingController,
                         decoration: textFieldInputDecoration("Email"),
                         style: simpleTextStyle(),
                       ),
                       TextFormField(
                         obscureText: true,
-                        validator: (val) {
-                          return val.length < 4 ? "Wrong Password" : null;
-                        },
+                        validator: PasswordValidator.validate,
                         controller: passwordTextEditingController,
                         decoration: textFieldInputDecoration("Password"),
                         style: simpleTextStyle(),
@@ -101,7 +100,7 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
                 SizedBox(
-                  height: 8,
+                  height: 30,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -118,21 +117,6 @@ class _SignInState extends State<SignIn> {
                       "Sign In",
                       style: TextStyle(fontSize: 17, color: Colors.white),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Text(
-                    "Sign In with Google",
-                    style: TextStyle(fontSize: 17, color: Colors.white),
                   ),
                 ),
                 SizedBox(
@@ -164,6 +148,28 @@ class _SignInState extends State<SignIn> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget showAlert() {
+    if (_error != null) {
+      setState(() {
+        _error = null;
+      });
+      return Container(
+        color: Colors.amberAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(_error),
+          ],
+        ),
+      );
+    }
+    return SizedBox(
+      height: 0,
     );
   }
 }

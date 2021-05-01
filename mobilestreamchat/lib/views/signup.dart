@@ -47,7 +47,6 @@ class _SignUpState extends State<SignUp> {
           .signUpwithEmailAndPassword(emailTextEditingController.text,
               passwordTextEditingController.text)
           .then((val) {
-        // print("${val.uid}");
         databaseMethods.uploadUserInfo(userInfoMap);
         HelperFuntions.saveUserLoggedInSharedPreference(true);
         Navigator.pushReplacement(
@@ -80,34 +79,20 @@ class _SignUpState extends State<SignUp> {
                         child: Column(
                           children: [
                             TextFormField(
-                              validator: (val) {
-                                return val.isEmpty || val.length < 4
-                                    ? "Please Provide Username"
-                                    : null;
-                              },
+                              validator: UserNameValidator.validate,
                               controller: userNameTextEditingController,
                               decoration: textFieldInputDecoration("Username"),
                               style: simpleTextStyle(),
                             ),
                             TextFormField(
-                              validator: (val) {
-                                return RegExp(
-                                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                        .hasMatch(val)
-                                    ? null
-                                    : "Enter valid email";
-                              },
+                              validator: EmailValidator.validate,
                               controller: emailTextEditingController,
                               decoration: textFieldInputDecoration("Email"),
                               style: simpleTextStyle(),
                             ),
                             TextFormField(
                               obscureText: true,
-                              validator: (val) {
-                                return val.length < 4
-                                    ? "Enter a Stronger Password"
-                                    : null;
-                              },
+                              validator: PasswordValidator.validate,
                               controller: passwordTextEditingController,
                               decoration: textFieldInputDecoration("Password"),
                               style: simpleTextStyle(),
@@ -116,7 +101,7 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                       SizedBox(
-                        height: 8,
+                        height: 30,
                       ),
                       GestureDetector(
                         onTap: () {

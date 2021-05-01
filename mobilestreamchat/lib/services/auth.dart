@@ -45,3 +45,37 @@ class AuthMethods {
     } catch (e) {}
   }
 }
+
+class UserNameValidator {
+  static String validate(String value) {
+    if (value.isEmpty) {
+      return "Name can't be empty";
+    }
+    if (value.length < 3) {
+      return "Name must be at least 3 characters";
+    }
+    if (value.length > 50) {
+      return "Name must be less than 50 characters";
+    }
+    if (value.indexOf(' ') >= 0) {
+      return "Contains spaces";
+    }
+    return null;
+  }
+}
+
+class EmailValidator {
+  static String validate(String value) {
+    return RegExp(
+                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+            .hasMatch(value)
+        ? null
+        : "Enter valid email";
+  }
+}
+
+class PasswordValidator {
+  static String validate(String value) {
+    return value.length < 4 ? "Enter a Stronger Password" : null;
+  }
+}
