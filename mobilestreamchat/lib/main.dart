@@ -61,7 +61,8 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
       ),
-      home: userIsLoggedIn ? ChatRoom() : Authenticate(),
+      home: Authenticate(),
+      //userIsLoggedIn ? ChatRoom() : 
     );
   }
 }

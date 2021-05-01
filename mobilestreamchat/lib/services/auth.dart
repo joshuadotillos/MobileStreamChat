@@ -31,6 +31,10 @@ class AuthMethods {
     }
   }
 
+  Future<void> validatePassword(String password) async{
+    
+  }
+
   Future resetPass(String email) async {
     try {
       return await _auth.sendPasswordResetEmail(email: email);
@@ -76,6 +80,10 @@ class EmailValidator {
 
 class PasswordValidator {
   static String validate(String value) {
-    return value.length < 4 ? "Enter a Stronger Password" : null;
+    if(value.length < 4){
+      return "Enter a Stronger Password";
+    }
+    return null;
+    //value.length < 4 ? "Enter a Stronger Password" : null;
   }
 }

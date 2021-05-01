@@ -1,13 +1,11 @@
 //EDITED BY ROSIE
 import 'package:flutter/material.dart';
-import 'package:mobilestreamchat/chat/newDirectMessage.dart';
-import 'package:mobilestreamchat/chat/newGroup.dart';
 import 'package:mobilestreamchat/helper/authenticate.dart';
 import 'package:mobilestreamchat/helper/constants.dart';
 import 'package:mobilestreamchat/helper/helperfunctions.dart';
 import 'package:mobilestreamchat/services/auth.dart';
 import 'package:mobilestreamchat/services/database.dart';
-import 'package:mobilestreamchat/views/conversationScreen.dart';
+import 'package:mobilestreamchat/views/chat/conversationScreen.dart';
 import 'package:mobilestreamchat/views/search.dart';
 
 int selectBottomIndex = 0;
@@ -65,26 +63,12 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-    String title() {
-      if (selectBottomIndex == 0) {
-        return 'Personal Chat';
-      } else if (selectBottomIndex == 1) {
-        return 'Group Chat';
-      }
-      return "";
-    }
-
-    void itemTapped(int index) {
-      setState(() {
-        selectBottomIndex = index;
-      });
-    }
 
     return Scaffold(
       drawer: drawer(context),
       appBar: AppBar(
         title: Text(
-          title(),
+          "Stream Chat",
         ),
       ),
       body: chatRoomList(),
@@ -95,8 +79,6 @@ class _ChatRoomState extends State<ChatRoom> {
               context, MaterialPageRoute(builder: (context) => SearchScreen()));
         },
       ),
-      bottomNavigationBar:
-          bottomNavigationBar(context, selectBottomIndex, itemTapped),
     );
   }
 }
@@ -122,7 +104,7 @@ Widget drawer(BuildContext context) {
                 ),
                 accountName: FittedBox(
                   child: Text(
-                    "NAME",
+                    "USERNAME",
                     style: TextStyle(
                       fontSize: 16.0,
                     ),
@@ -135,28 +117,6 @@ Widget drawer(BuildContext context) {
               ),
             ),
           ),
-        ),
-        ListTile(
-          leading: Icon(Icons.edit),
-          title: Text(
-            'New Direct Message',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          onTap: () {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => NewDirectMessage()));
-          },
-        ),
-        ListTile(
-          leading: Icon(Icons.group_add),
-          title: Text(
-            'New Group',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          onTap: () {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => NewGroup()));
-          },
         ),
         Container(
           child: Align(
@@ -176,27 +136,6 @@ Widget drawer(BuildContext context) {
         ),
       ],
     ),
-  );
-}
-
-//bottomNavigationBar
-Widget bottomNavigationBar(
-    BuildContext context, int bottomIndex, Function tap) {
-  return BottomNavigationBar(
-    items: const <BottomNavigationBarItem>[
-      BottomNavigationBarItem(
-        icon: Icon(Icons.person),
-        title: Text('Personal Chat'),
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.group),
-        title: Text('Group Chat'),
-      ),
-    ],
-    currentIndex: bottomIndex,
-    selectedItemColor: Theme.of(context).primaryColor,
-    unselectedItemColor: Theme.of(context).accentColor,
-    onTap: tap,
   );
 }
 

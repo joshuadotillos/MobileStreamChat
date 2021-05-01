@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobilestreamchat/helper/constants.dart';
 import 'package:mobilestreamchat/helper/helperfunctions.dart';
 import 'package:mobilestreamchat/services/database.dart';
-import 'package:mobilestreamchat/views/conversationScreen.dart';
+import 'package:mobilestreamchat/views/chat/conversationScreen.dart';
 import 'package:mobilestreamchat/widgets/widget.dart';
 
 class SearchScreen extends StatefulWidget {

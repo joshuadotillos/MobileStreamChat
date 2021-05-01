@@ -79,6 +79,22 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 color: Colors.grey,
                 child: Row(
                   children: [
+                    GestureDetector(
+                      onTap: () {
+                        //to be edit for image attachment
+                      },
+                      child: Container(
+                          height: 40,
+                          width: 40,
+                          padding: EdgeInsets.all(12.0),
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(40)),
+                          child: Image.asset("assets/images/imageIconWhite.png")),
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
                     Expanded(
                         child: TextField(
                       controller: messageController,
@@ -100,7 +116,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(40)),
                           child: Image.asset("assets/images/send.png")),
-                    )
+                    ),
                   ],
                 ),
               ),
