@@ -1,5 +1,6 @@
 //EDITED BY ROSIE
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:mobilestreamchat/helper/helperfunctions.dart';
 import 'package:mobilestreamchat/services/auth.dart';
@@ -88,6 +89,7 @@ class _SignInState extends State<SignIn> {
                         controller: emailTextEditingController,
                         decoration: textFieldInputDecoration("Email"),
                         style: simpleTextStyle(),
+                        keyboardType: TextInputType.emailAddress,
                       ),
                       TextFormField(
                         obscureText: true,
@@ -103,7 +105,7 @@ class _SignInState extends State<SignIn> {
                   height: 30,
                 ),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     signIn();
                   },
                   child: Container(

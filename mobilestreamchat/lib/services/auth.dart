@@ -15,7 +15,10 @@ class AuthMethods {
           email: email, password: password);
       User firebaseUser = result.user;
       return _userFromFirebaseUser(firebaseUser);
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      if(e.code == 'wrong-password'){
+        print("Password invalid");
+      }
       print(e.toString());
     }
   }
@@ -26,13 +29,12 @@ class AuthMethods {
           email: email, password: password);
       User firebaseUser = result.user;
       return _userFromFirebaseUser(firebaseUser);
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        print("Email already in use");
+      }
       print(e.toString());
     }
-  }
-
-  Future<void> validatePassword(String password) async{
-    
   }
 
   Future resetPass(String email) async {
@@ -80,7 +82,7 @@ class EmailValidator {
 
 class PasswordValidator {
   static String validate(String value) {
-    if(value.length < 4){
+    if (value.length < 4) {
       return "Enter a Stronger Password";
     }
     return null;

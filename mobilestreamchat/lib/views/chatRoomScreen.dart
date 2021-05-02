@@ -8,8 +8,6 @@ import 'package:mobilestreamchat/services/database.dart';
 import 'package:mobilestreamchat/views/chat/conversationScreen.dart';
 import 'package:mobilestreamchat/views/search.dart';
 
-int selectBottomIndex = 0;
-
 class ChatRoom extends StatefulWidget {
   @override
   _ChatRoomState createState() => _ChatRoomState();
@@ -18,28 +16,34 @@ class ChatRoom extends StatefulWidget {
 class _ChatRoomState extends State<ChatRoom> {
   AuthMethods authMethods = new AuthMethods();
   DatabaseMethods databaseMethods = new DatabaseMethods();
-  Stream chatRoomsStream;
+  Stream mobileStreamChat;
 
   Widget chatRoomList() {
     return StreamBuilder(
-        stream: chatRoomsStream,
+        stream: mobileStreamChat,
         builder: (context, snapshot) {
           return snapshot.hasData
               ? ListView.builder(
                   itemCount: snapshot.data.docs.length,
                   itemBuilder: (context, index) {
-                    return ChatRoomsTile(
-                        snapshot.data.docs[index]
+                    return snapshot.data.docs.length < 0
+                        ? ChatRoomsTile(
+                            snapshot.data.docs[index]
+                                        .data()["users"][0]
+                                        .toString() ==
+                                    Constants.myName
+                                ? snapshot.data.docs[index]
+                                    .data()["users"][1]
+                                    .toString()
+                                : snapshot.data.docs[index]
                                     .data()["users"][0]
-                                    .toString() ==
-                                Constants.myName
-                            ? snapshot.data.docs[index]
-                                .data()["users"][1]
-                                .toString()
-                            : snapshot.data.docs[index]
-                                .data()["users"][0]
-                                .toString(),
-                        snapshot.data.docs[index].data()["chatroomId"]);
+                                    .toString(),
+                            snapshot.data.docs[index].data()["chatroomId"],
+                            //snapshot.data.docs[index].data()["chats"],
+                          )
+                        : Container(
+                            child: Text("Text"),
+                          );
                   })
               : Container();
         });
@@ -55,7 +59,7 @@ class _ChatRoomState extends State<ChatRoom> {
     Constants.myName = await HelperFuntions.getUserNameSharedPreference();
     databaseMethods.getChatRooms(Constants.myName).then((value) {
       setState(() {
-        chatRoomsStream = value;
+        mobileStreamChat = value;
       });
     });
     setState(() {});
@@ -63,7 +67,6 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       drawer: drawer(context),
       appBar: AppBar(
@@ -142,6 +145,7 @@ Widget drawer(BuildContext context) {
 class ChatRoomsTile extends StatelessWidget {
   final String userName;
   final String chatRoomId;
+  //final String message;
   ChatRoomsTile(this.userName, this.chatRoomId);
   @override
   Widget build(BuildContext context) {
@@ -155,26 +159,35 @@ class ChatRoomsTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Row(
-          children: [
+          children: <Widget>[
             Container(
-              height: 40.0,
-              width: 40.0,
+              height: 60.0,
+              width: 60.0,
               alignment: Alignment.center,
               child: Text(
                 "${userName.substring(0, 1).toUpperCase()}",
                 style: TextStyle(color: Colors.white),
               ),
               decoration: BoxDecoration(
-                  color: Colors.indigo,
+                  color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(40)),
             ),
             SizedBox(
-              width: 8,
+              width: 10,
             ),
-            Text(
-              userName,
-              style: TextStyle(fontSize: 14.0, fontFamily: "Raleway"),
-            )
+            Column(
+              //for user and message to be shown in the home page
+              children: <Widget>[
+                Text(
+                  userName,
+                  style: TextStyle(fontSize: 17.0, fontFamily: "Raleway"),
+                ),
+                Text(
+                  "message",
+                  style: TextStyle(fontSize: 17.0, fontFamily: "Raleway"),
+                ),
+              ],
+            ),
           ],
         ),
       ),
