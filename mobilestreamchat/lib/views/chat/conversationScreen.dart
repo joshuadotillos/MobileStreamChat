@@ -1,9 +1,12 @@
 //EDITED BY ROSIE
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:mobilestreamchat/helper/constants.dart';
 import 'package:mobilestreamchat/services/database.dart';
-import 'package:mobilestreamchat/widgets/widget.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as Path;
 
 class ConversationScreen extends StatefulWidget {
   final String chatRoomId;
@@ -17,7 +20,32 @@ class _ConversationScreenState extends State<ConversationScreen> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController messageController = new TextEditingController();
 
+  File _image;
+  String _uploadedFileURL;
+
   Stream chatMessageStream;
+
+  Future chooseFile() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+  }
+
+  Future uploadFile() async {
+    Reference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('chats/${Path.basename(_image.path)}}');
+    UploadTask uploadTask = storageReference.putFile(_image);
+    (await uploadTask).ref.getDownloadURL();
+    print('File Uploaded');
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        _uploadedFileURL = fileURL;
+      });
+    });
+  }
 
   Widget chatMessageList() {
     return StreamBuilder(
@@ -79,10 +107,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 color: Colors.grey,
                 child: Row(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        //to be edit for image attachment
-                      },
+                    InkWell(
+                      onTap: chooseFile,
                       child: Container(
                           height: 40,
                           width: 40,
@@ -90,7 +116,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           decoration: BoxDecoration(
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(40)),
-                          child: Image.asset("assets/images/imageIconWhite.png")),
+                          child:
+                              Image.asset("assets/images/imageIconWhite.png")),
                     ),
                     SizedBox(
                       width: 10.0,
