@@ -1,17 +1,12 @@
 //EDITED BY ROSIE
 import 'package:flutter/material.dart';
-import 'package:mobilestreamchat/chat/groupChat.dart';
-import 'package:mobilestreamchat/chat/newDirectMessage.dart';
-import 'package:mobilestreamchat/chat/newGroup.dart';
-import 'package:mobilestreamchat/chat/personalChat.dart';
 import 'package:mobilestreamchat/helper/authenticate.dart';
+import 'package:mobilestreamchat/helper/constants.dart';
+import 'package:mobilestreamchat/helper/helperfunctions.dart';
 import 'package:mobilestreamchat/services/auth.dart';
+import 'package:mobilestreamchat/services/database.dart';
+import 'package:mobilestreamchat/views/chat/conversationScreen.dart';
 import 'package:mobilestreamchat/views/search.dart';
-
-import 'package:mobilestreamchat/views/signin.dart';
-import 'package:mobilestreamchat/widgets/widget.dart';
-
-int selectBottomIndex = 0;
 
 class ChatRoom extends StatefulWidget {
   @override
@@ -20,33 +15,66 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
   AuthMethods authMethods = new AuthMethods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
+  Stream mobileStreamChat;
+
+  Widget chatRoomList() {
+    return StreamBuilder(
+        stream: mobileStreamChat,
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) {
+                    return snapshot.data.docs.length < 0
+                        ? ChatRoomsTile(
+                            snapshot.data.docs[index]
+                                        .data()["users"][0]
+                                        .toString() ==
+                                    Constants.myName
+                                ? snapshot.data.docs[index]
+                                    .data()["users"][1]
+                                    .toString()
+                                : snapshot.data.docs[index]
+                                    .data()["users"][0]
+                                    .toString(),
+                            snapshot.data.docs[index].data()["chatroomId"],
+                            //snapshot.data.docs[index].data()["chats"],
+                          )
+                        : Container(
+                            child: Text("Text"),
+                          );
+                  })
+              : Container();
+        });
+  }
+
+  @override
+  void initState() {
+    getUserInfo();
+    super.initState();
+  }
+
+  getUserInfo() async {
+    Constants.myName = await HelperFuntions.getUserNameSharedPreference();
+    databaseMethods.getChatRooms(Constants.myName).then((value) {
+      setState(() {
+        mobileStreamChat = value;
+      });
+    });
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    String title() {
-      if (selectBottomIndex == 0) {
-        return 'Personal Chat';
-      } else if (selectBottomIndex == 1) {
-        return 'Group Chat';
-      }
-      return "";
-    }
-
-    void itemTapped(int index) {
-      setState(() {
-        selectBottomIndex = index;
-      });
-    }
-
     return Scaffold(
       drawer: drawer(context),
       appBar: AppBar(
         title: Text(
-          title(),
+          "Stream Chat",
         ),
       ),
-      body: Center(
-        child: (selectBottomIndex == 0) ? PersonalChat() : GroupChat(),
-      ),
+      body: chatRoomList(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.search),
         onPressed: () {
@@ -54,8 +82,6 @@ class _ChatRoomState extends State<ChatRoom> {
               context, MaterialPageRoute(builder: (context) => SearchScreen()));
         },
       ),
-      bottomNavigationBar:
-          bottomNavigationBar(context, selectBottomIndex, itemTapped),
     );
   }
 }
@@ -81,7 +107,7 @@ Widget drawer(BuildContext context) {
                 ),
                 accountName: FittedBox(
                   child: Text(
-                    "NAME",
+                    "USERNAME",
                     style: TextStyle(
                       fontSize: 16.0,
                     ),
@@ -94,28 +120,6 @@ Widget drawer(BuildContext context) {
               ),
             ),
           ),
-        ),
-        ListTile(
-          leading: Icon(Icons.edit),
-          title: Text(
-            'New Direct Message',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          onTap: () {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => NewDirectMessage()));
-          },
-        ),
-        ListTile(
-          leading: Icon(Icons.group_add),
-          title: Text(
-            'New Group',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          onTap: () {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => NewGroup()));
-          },
         ),
         Container(
           child: Align(
@@ -138,23 +142,55 @@ Widget drawer(BuildContext context) {
   );
 }
 
-//bottomNavigationBar
-Widget bottomNavigationBar(
-    BuildContext context, int bottomIndex, Function tap) {
-  return BottomNavigationBar(
-    items: const <BottomNavigationBarItem>[
-      BottomNavigationBarItem(
-        icon: Icon(Icons.person),
-        title: Text('Personal Chat'),
+class ChatRoomsTile extends StatelessWidget {
+  final String userName;
+  final String chatRoomId;
+  //final String message;
+  ChatRoomsTile(this.userName, this.chatRoomId);
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ConversationScreen(chatRoomId)));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Row(
+          children: <Widget>[
+            Container(
+              height: 60.0,
+              width: 60.0,
+              alignment: Alignment.center,
+              child: Text(
+                "${userName.substring(0, 1).toUpperCase()}",
+                style: TextStyle(color: Colors.white),
+              ),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(40)),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Column(
+              //for user and message to be shown in the home page
+              children: <Widget>[
+                Text(
+                  userName,
+                  style: TextStyle(fontSize: 17.0, fontFamily: "Raleway"),
+                ),
+                Text(
+                  "message",
+                  style: TextStyle(fontSize: 17.0, fontFamily: "Raleway"),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.group),
-        title: Text('Group Chat'),
-      ),
-    ],
-    currentIndex: bottomIndex,
-    selectedItemColor: Theme.of(context).primaryColor,
-    unselectedItemColor: Theme.of(context).accentColor,
-    onTap: tap,
-  );
+    );
+  }
 }

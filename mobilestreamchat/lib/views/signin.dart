@@ -1,6 +1,10 @@
 //EDITED BY ROSIE
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
-import 'package:mobilestreamchat/net/flutterfire.dart';
+import 'package:mobilestreamchat/helper/helperfunctions.dart';
+import 'package:mobilestreamchat/services/auth.dart';
+import 'package:mobilestreamchat/services/database.dart';
 import 'package:mobilestreamchat/views/chatRoomScreen.dart';
 import 'package:mobilestreamchat/widgets/widget.dart';
 
@@ -13,8 +17,52 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  TextEditingController _emailField = TextEditingController();
-  TextEditingController _passwordField = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  AuthMethods authMethods = new AuthMethods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
+  TextEditingController emailTextEditingController =
+      new TextEditingController();
+  TextEditingController passwordTextEditingController =
+      new TextEditingController();
+
+  bool isLoading = false;
+  QuerySnapshot snapshotUserInfo;
+  String _error;
+
+  signIn() {
+    if (formKey.currentState.validate()) {
+      try {
+        HelperFuntions.saveUserEmailSharedPreference(
+            emailTextEditingController.text);
+
+        databaseMethods
+            .getUserbyUserEmail(emailTextEditingController.text)
+            .then((val) {
+          snapshotUserInfo = val;
+          HelperFuntions.saveUserNameSharedPreference(
+              snapshotUserInfo.docs[0].data()["name"]);
+        });
+
+        setState(() {
+          isLoading = true;
+        });
+        authMethods
+            .signInWithEmailAndPassword(emailTextEditingController.text,
+                passwordTextEditingController.text)
+            .then((val) {
+          if (val != null) {
+            HelperFuntions.saveUserLoggedInSharedPreference(true);
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => ChatRoom()));
+          }
+        });
+      } catch (e) {
+        setState(() {
+          _error = e.message;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,61 +76,48 @@ class _SignInState extends State<SignIn> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                showAlert(),
                 SizedBox(
                   height: 90,
                 ),
-                TextField(
-                  controller: _emailField,
-                  decoration: textFieldInputDecoration("Email"),
-                  style: simpleTextStyle(),
-                ),
-                TextField(
-                  controller: _passwordField,
-                  decoration: textFieldInputDecoration("Password"),
-                  style: simpleTextStyle(),
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text(
-                      "Forgot Password?",
-                      style: mediumTextStyle(),
-                    ),
+                Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        validator: EmailValidator.validate,
+                        controller: emailTextEditingController,
+                        decoration: textFieldInputDecoration("Email"),
+                        style: simpleTextStyle(),
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      TextFormField(
+                        obscureText: true,
+                        validator: PasswordValidator.validate,
+                        controller: passwordTextEditingController,
+                        decoration: textFieldInputDecoration("Password"),
+                        style: simpleTextStyle(),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
-                  height: 8,
+                  height: 30,
                 ),
-                Container(
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(vertical: 5.0),
-                  decoration: BoxDecoration(
-                      color: Colors.indigo,
-                      borderRadius: BorderRadius.circular(30)),
-                  child: MaterialButton(
-                    onPressed: () async {
-                      bool shouldNavigate =
-                          await signIn(_emailField.text, _passwordField.text);
-                      if (shouldNavigate) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ChatRoom(),
-                          ),
-                        );
-                      }
-                    },
+                GestureDetector(
+                  onTap: () async {
+                    signIn();
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                    decoration: BoxDecoration(
+                        color: Colors.indigo,
+                        borderRadius: BorderRadius.circular(30)),
                     child: Text(
                       "Sign In",
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontFamily: "Raleway",
-                          color: Colors.white),
+                      style: TextStyle(fontSize: 17, color: Colors.white),
                     ),
                   ),
                 ),
@@ -115,6 +150,28 @@ class _SignInState extends State<SignIn> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget showAlert() {
+    if (_error != null) {
+      setState(() {
+        _error = null;
+      });
+      return Container(
+        color: Colors.amberAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(_error),
+          ],
+        ),
+      );
+    }
+    return SizedBox(
+      height: 0,
     );
   }
 }
