@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobilestreamchat/modal/user.dart';
 
+
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -16,7 +17,7 @@ class AuthMethods {
       User firebaseUser = result.user;
       return _userFromFirebaseUser(firebaseUser);
     } on FirebaseAuthException catch (e) {
-      if(e.code == 'wrong-password'){
+      if (e.code == 'wrong-password') {
         print("Password invalid");
       }
       print(e.toString());
