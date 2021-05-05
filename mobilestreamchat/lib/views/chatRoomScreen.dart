@@ -36,7 +36,6 @@ class _ChatRoomState extends State<ChatRoom> {
                               .data()["users"][0]
                               .toString(),
                       snapshot.data.docs[index].data()["chatroomId"],
-                      //snapshot.data.docs[index].data()["chats"],
                     );
                   })
               : Container();
@@ -95,13 +94,13 @@ Widget drawer(BuildContext context) {
               child: UserAccountsDrawerHeader(
                 accountEmail: FittedBox(
                   child: Text(
-                    "email@email.com",
+                    "DummyEmail",
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ),
                 accountName: FittedBox(
                   child: Text(
-                    "USERNAME",
+                    "DummyUserName",
                     style: TextStyle(
                       fontSize: 16.0,
                     ),
@@ -139,7 +138,6 @@ Widget drawer(BuildContext context) {
 class ChatRoomsTile extends StatelessWidget {
   final String userName;
   final String chatRoomId;
-  //final String message;
   ChatRoomsTile(this.userName, this.chatRoomId);
   @override
   Widget build(BuildContext context) {
@@ -169,18 +167,10 @@ class ChatRoomsTile extends StatelessWidget {
             SizedBox(
               width: 10,
             ),
-            Column(
-              //for user and message to be shown in the home page
-              children: <Widget>[
-                Text(
-                  userName,
-                  style: TextStyle(fontSize: 17.0, fontFamily: "Raleway"),
-                ),
-                Text(
-                  "message",
-                  style: TextStyle(fontSize: 17.0, fontFamily: "Raleway"),
-                ),
-              ],
+            //for name
+            Text(
+              userName,
+              style: TextStyle(fontSize: 17.0, fontFamily: "Raleway"),
             ),
           ],
         ),
