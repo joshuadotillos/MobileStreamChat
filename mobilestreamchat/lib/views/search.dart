@@ -92,7 +92,8 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Text(
                 "Message",
-                style: TextStyle(fontSize: 13.0, color: Colors.white),
+                style: TextStyle(
+                    fontSize: 13.0, color: Colors.white, fontFamily: "Raleway"),
               ),
               decoration: BoxDecoration(
                   color: Colors.indigo,
@@ -129,7 +130,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                         hintText: "Search Username...",
-                        hintStyle: TextStyle(color: Colors.white),
+                        hintStyle: TextStyle(
+                            color: Colors.white, fontFamily: "Raleway"),
                         border: InputBorder.none),
                   )),
                   GestureDetector(
