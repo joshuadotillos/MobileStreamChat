@@ -26,24 +26,18 @@ class _ChatRoomState extends State<ChatRoom> {
               ? ListView.builder(
                   itemCount: snapshot.data.docs.length,
                   itemBuilder: (context, index) {
-                    return snapshot.data.docs.length < 0
-                        ? ChatRoomsTile(
-                            snapshot.data.docs[index]
-                                        .data()["users"][0]
-                                        .toString() ==
-                                    Constants.myName
-                                ? snapshot.data.docs[index]
-                                    .data()["users"][1]
-                                    .toString()
-                                : snapshot.data.docs[index]
-                                    .data()["users"][0]
-                                    .toString(),
-                            snapshot.data.docs[index].data()["chatroomId"],
-                            //snapshot.data.docs[index].data()["chats"],
-                          )
-                        : Container(
-                            child: Text("Text"),
-                          );
+                    return ChatRoomsTile(
+                      snapshot.data.docs[index].data()["users"][0].toString() ==
+                              Constants.myName
+                          ? snapshot.data.docs[index]
+                              .data()["users"][1]
+                              .toString()
+                          : snapshot.data.docs[index]
+                              .data()["users"][0]
+                              .toString(),
+                      snapshot.data.docs[index].data()["chatroomId"],
+                      //snapshot.data.docs[index].data()["chats"],
+                    );
                   })
               : Container();
         });
