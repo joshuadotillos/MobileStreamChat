@@ -1,4 +1,4 @@
-# crypto_wallet
+# MobileStreamChat
 
 A new Flutter project.
 
